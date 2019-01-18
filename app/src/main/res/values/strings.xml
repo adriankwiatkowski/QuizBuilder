@@ -1,0 +1,83 @@
+<resources>
+    <string name="app_name">Quiz Builder</string>
+
+    <!-- NavigationDrawer strings -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="change_quiz_name">Change Quiz Name</string>
+    <string name="chooser_type">Chooser</string>
+    <string name="picker_type">Picker</string>
+    <string name="switch_type">Switch</string>
+    <string name="text_answer_type">Text Answer</string>
+
+    <!-- AlertDialogFragment strings -->
+    <string name="delete_quiz_message">Delete quiz?</string>
+    <string name="discard_dialog_title">Delete this page?</string>
+    <string name="discard_dialog_message">Discard page.</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and play?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+
+    <!-- Database related strings -->
+    <string name="insert_successful">Quiz Added.</string>
+    <string name="update_successful">Quiz Updated.</string>
+    <string name="quiz_deleted">Quiz deleted.</string>
+
+    <!-- Quiz app titles -->
+    <string name="quizzes">Quizzes</string>
+    <string name="add_quiz_title">Add New Quiz</string>
+    <string name="update_quiz_title">Update Quiz</string>
+
+    <!-- Menu item names -->
+    <string name="action_delete_all">Delete All</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_build">Update</string>
+    <string name="action_delete_page">Delete Page</string>
+    <string name="action_play">Play Quiz</string>
+    <string name="action_add_page">Add Page</string>
+
+    <!-- DetailFragment strings -->
+    <string name="chooser_hint">Answer…</string>
+    <string name="quiz_name_hint">Quiz name…</string>
+    <string name="question_hint">Question…</string>
+    <string name="next">Next</string>
+    <string name="add">Add</string>
+    <string name="question_label">Question</string>
+    <string name="previous">Previous</string>
+    <string name="current_page_args">%1$d/%2$d</string>
+    <string name="score_points_args">%1$s score: %2$d/%3$d</string>
+    <string name="play_again">play again!</string>
+    <string name="insert_answer_hint">Insert answer…</string>
+    <string name="insert_name_hint">Name…</string>
+    <string name="insert_name_label">Insert Name</string>
+    <string name="score_max">Congartz %1$s! You\'re awesome!</string>
+    <string name="score_high">Very nice %1$s! Keep up the good work!</string>
+    <string name="score_good">Not bad %1$s!</string>
+    <string name="score_medium">Maybe next time %1$s!</string>
+    <string name="score_low">Try again %1$s!</string>
+    <string name="score_very_low">Relax and try again %1$s!</string>
+    <string name="score_0">0 out of 10 %1$s!</string>
+
+    <!-- Error strings -->
+    <string name="error_quiz_name">Name cannot be empty.</string>
+    <string name="error_insert">Error occurred while inserting quiz</string>
+    <string name="error_page_empty">Please fill all gaps first.</string>
+    <string name="error_chooser_msg">Set at least one correct answer.</string>
+    <string name="error_play_msg">Fill in all required fields first.</string>
+    <string name="error_no_questions">Add questions to quiz.</string>
+    <string name="error_no_question">Page %1$d: Question required.</string>
+    <string name="error_no_answers">Page %1$d: Answers required.</string>
+    <string name="error_no_correct_answer">Page %1$d: Correct answer required.</string>
+
+    <string name="empty_string" />
+    <string name="undo">Undo</string>
+    <string name="question_count_args">%1$d questions</string>
+
+</resources>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/next_button"
+        style="@style/BottomButton"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/play_again_button"
+        style="@style/CenterButton"
+        android:text="@string/play_again"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/question_name_tv"
+        style="@style/TitleText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Why mac succ?"
+        tools:visibility="visible" />
+
+    <RadioButton
+        android:id="@+id/radio_button_1"
+        style="@style/QuizPicker"
+        android:checked="true"
+        app:layout_constraintBottom_toTopOf="@id/radio_button_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_name_tv"
+        tools:text="Answer 1..."
+        tools:visibility="visible" />
+
+    <RadioButton
+        android:id="@+id/radio_button_2"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/radio_button_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radio_button_1"
+        tools:text="Answer 2..."
+        tools:visibility="visible" />
+
+    <RadioButton
+        android:id="@+id/radio_button_3"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/radio_button_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radio_button_2"
+        tools:text="Answer 3..."
+        tools:visibility="visible" />
+
+    <RadioButton
+        android:id="@+id/radio_button_4"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/button_barrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radio_button_3"
+        tools:text="Answer 4..."
+        tools:visibility="visible" />
+
+    <CheckBox
+        android:id="@+id/checkbox_1"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/checkbox_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_name_tv"
+        tools:visibility="visible" />
+
+    <CheckBox
+        android:id="@+id/checkbox_2"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/checkbox_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_1"
+        tools:visibility="visible" />
+
+    <CheckBox
+        android:id="@+id/checkbox_3"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/checkbox_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_2"
+        tools:visibility="visible" />
+
+    <CheckBox
+        android:id="@+id/checkbox_4"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/button_barrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_3"
+        tools:visibility="visible" />
+
+    <Switch
+        android:id="@+id/switch_1"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/switch_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_name_tv"
+        tools:visibility="visible" />
+
+    <Switch
+        android:id="@+id/switch_2"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/switch_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switch_1"
+        tools:visibility="visible" />
+
+    <Switch
+        android:id="@+id/switch_3"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/switch_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switch_2"
+        tools:visibility="visible" />
+
+    <Switch
+        android:id="@+id/switch_4"
+        style="@style/QuizPicker"
+        app:layout_constraintBottom_toTopOf="@id/button_barrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switch_3"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/edit_answer"
+        style="@style/QuizEdit"
+        android:hint="@string/insert_answer_hint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/user_name_label"
+        style="@style/TitleText"
+        android:text="@string/insert_name_label"
+        app:layout_constraintBottom_toTopOf="@id/user_name_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/user_name_edit"
+        style="@style/QuizNameEdit"
+        android:hint="@string/insert_name_hint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/congratz_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/play_again_button"
+        tools:text="Congratz! You're awesome =]"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/score_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/congratz_tv"
+        tools:text="Your score: 21/15"
+        tools:visibility="visible" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/button_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="next_button" />
+
+</android.support.constraint.ConstraintLayout>
