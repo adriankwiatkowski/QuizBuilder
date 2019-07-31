@@ -1,18 +1,11 @@
-package com.example.android.quizbuilder.ui;
+package com.example.android.quizbuilder.ui.fragments;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -23,15 +16,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.quizbuilder.R;
-import com.example.android.quizbuilder.data.QuizRepository;
-import com.example.android.quizbuilder.data.database.QuizEntry;
 import com.example.android.quizbuilder.data.database.QuizPage;
-import com.example.android.quizbuilder.interfaces.DetailFragmentListener;
-import com.example.android.quizbuilder.viewmodels.QuizDetailViewModel;
-import com.example.android.quizbuilder.viewmodels.QuizDetailViewModelFactory;
+import com.example.android.quizbuilder.utilities.QuizUtils;
 
 import java.util.List;
 
@@ -40,13 +28,15 @@ import static com.example.android.quizbuilder.data.database.QuizConstants.TYPE_P
 import static com.example.android.quizbuilder.data.database.QuizConstants.TYPE_SWITCH;
 import static com.example.android.quizbuilder.data.database.QuizConstants.TYPE_TEXT_ANSWER;
 
-public class AnswerFragment extends Fragment
-        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+abstract class AbstractQuizAnswerFragment extends Fragment
+        implements View.OnClickListener, View.OnKeyListener, CompoundButton.OnCheckedChangeListener {
+
+    private static final String TAG = AbstractQuizAnswerFragment.class.getSimpleName();
 
     private static final String SCORE_KEY = "score";
     private static final String CURRENT_PAGE_KEY = "current_page";
     private static final String USER_NAME_KEY = "user_name";
-    private static final int DEFAULT_PAGE = -1;
+    protected static final int DEFAULT_PAGE = -1;
 
     private Button mPlayAgainButton;
     private TextView mCongratzTv, mScoreTv;
@@ -58,24 +48,9 @@ public class AnswerFragment extends Fragment
     private Switch mSwitch1, mSwitch2, mSwitch3, mSwitch4;
     private EditText mUserNameEdit, mAnswerEdit;
 
-    private DetailFragmentListener mDetailFragmentListener;
-
-    private QuizEntry mQuizEntry;
-
     private int mCurrentPage = DEFAULT_PAGE;
     private int mScore = 0;
     private String mUserName = "";
-
-    private QuizDetailViewModel mViewModel;
-
-    public AnswerFragment() {
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 
     @Nullable
     @Override
@@ -107,28 +82,7 @@ public class AnswerFragment extends Fragment
         mRadioButton2.setOnCheckedChangeListener(this);
         mRadioButton3.setOnCheckedChangeListener(this);
         mRadioButton4.setOnCheckedChangeListener(this);
-        mUserNameEdit.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    if (mCurrentPage == DEFAULT_PAGE) {
-                        String name = mUserNameEdit.getText().toString().trim();
-                        if (TextUtils.isEmpty(name)) {
-                            Toast.makeText(getContext(), "Please insert name", Toast.LENGTH_SHORT).show();
-                        } else {
-                            mUserName = name;
-                            mCurrentPage++;
-                            showPage();
-                            // Hide keyboard
-                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(mUserNameEdit.getWindowToken(), 0);
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        });
+        mUserNameEdit.setOnKeyListener(this);
         return rootView;
     }
 
@@ -136,42 +90,10 @@ public class AnswerFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mDetailFragmentListener.lockDrawer();
-
         if (savedInstanceState != null) {
             mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
             mScore = savedInstanceState.getInt(SCORE_KEY);
             mUserName = savedInstanceState.getString(USER_NAME_KEY);
-        }
-
-        QuizDetailViewModelFactory factory = new QuizDetailViewModelFactory(QuizRepository.getInstance(getContext()));
-        mViewModel = ViewModelProviders.of(getActivity(), factory).get(QuizDetailViewModel.class);
-        mViewModel.getQuizEntry().observe(this, new Observer<QuizEntry>() {
-            @Override
-            public void onChanged(@Nullable QuizEntry quizEntry) {
-                mQuizEntry = quizEntry;
-                if (quizEntry != null) {
-                    mDetailFragmentListener.setTitle(mQuizEntry.getName());
-                    showPage();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_answer, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_build:
-                mDetailFragmentListener.buildQuiz();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -179,23 +101,10 @@ public class AnswerFragment extends Fragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.next_button:
-                if (mCurrentPage == DEFAULT_PAGE) {
-                    String name = mUserNameEdit.getText().toString().trim();
-                    if (TextUtils.isEmpty(name)) {
-                        Toast.makeText(getContext(), "Please insert name", Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    mUserName = name;
-                } else {
-                    addScore();
-                }
-                mCurrentPage++;
-                showPage();
+                onNextButtonClick();
                 break;
             case R.id.play_again_button:
-                mCurrentPage = DEFAULT_PAGE;
-                mScore = 0;
-                showPage();
+                onPlayAgainButtonClick();
                 break;
         }
     }
@@ -214,35 +123,19 @@ public class AnswerFragment extends Fragment
         }
     }
 
-    private void showPage() {
+    protected void showPage(List<QuizPage> pageList) {
 
         clearPage();
 
-        invalidateViews();
+        invalidateViews(pageList);
 
-        if (mCurrentPage >= mQuizEntry.getPages().size()) {
+        if (mCurrentPage >= pageList.size()) {
             // Show score.
-            mScoreTv.setText(getString(R.string.score_points_args, mUserName, mScore, mQuizEntry.getPages().size()));
-            double percentageScore = ((double) mScore * 100) / (double) mQuizEntry.getPages().size();
-            Toast.makeText(getContext(), "" + percentageScore, Toast.LENGTH_SHORT).show();
-            if (percentageScore >= 100) {
-                mCongratzTv.setText(getString(R.string.score_max, mUserName));
-            } else if (percentageScore >= 80) {
-                mCongratzTv.setText(getString(R.string.score_high, mUserName));
-            } else if (percentageScore >= 60) {
-                mCongratzTv.setText(getString(R.string.score_good, mUserName));
-            } else if (percentageScore >= 40) {
-                mCongratzTv.setText(getString(R.string.score_medium, mUserName));
-            } else if (percentageScore >= 20) {
-                mCongratzTv.setText(getString(R.string.score_low, mUserName));
-            } else if (percentageScore > 0) {
-                mCongratzTv.setText(getString(R.string.score_very_low, mUserName));
-            } else {
-                mCongratzTv.setText(getString(R.string.score_0, mUserName));
-            }
+            int maxScore = pageList.size();
+            setEndScoreText(maxScore);
         } else if (mCurrentPage != DEFAULT_PAGE) {
             // Show question.
-            QuizPage quizPage = mQuizEntry.getPages().get(mCurrentPage);
+            QuizPage quizPage = pageList.get(mCurrentPage);
             mQuestionTv.setText(quizPage.getQuestion());
             int type = quizPage.getType();
             if (type == TYPE_CHOOSER || type == TYPE_PICKER || type == TYPE_SWITCH) {
@@ -255,8 +148,7 @@ public class AnswerFragment extends Fragment
         // Else show welcome screen.
     }
 
-    private void addScore() {
-        QuizPage quizPage = mQuizEntry.getPages().get(mCurrentPage);
+    protected void addScore(QuizPage quizPage) {
         boolean isCorrect = false;
         int type = quizPage.getType();
         List<String> correctAnswers = quizPage.getCorrectAnswers();
@@ -298,7 +190,7 @@ public class AnswerFragment extends Fragment
         mAnswerEdit.setText("");
     }
 
-    private void invalidateViews() {
+    private void invalidateViews(List<QuizPage> pageList) {
 
         // Hide all views.
         mUserNameEdit.setVisibility(View.INVISIBLE);
@@ -322,14 +214,14 @@ public class AnswerFragment extends Fragment
         mCongratzTv.setVisibility(View.INVISIBLE);
         mPlayAgainButton.setVisibility(View.INVISIBLE);
 
-        if (mCurrentPage >= mQuizEntry.getPages().size()) {
+        if (mCurrentPage >= pageList.size()) {
             // Show score
             mScoreTv.setVisibility(View.VISIBLE);
             mCongratzTv.setVisibility(View.VISIBLE);
             mPlayAgainButton.setVisibility(View.VISIBLE);
         } else if (mCurrentPage != DEFAULT_PAGE) {
             // Show question.
-            QuizPage quizPage = mQuizEntry.getPages().get(mCurrentPage);
+            QuizPage quizPage = pageList.get(mCurrentPage);
             switch (quizPage.getType()) {
                 case TYPE_CHOOSER:
                     mNextButton.setVisibility(View.VISIBLE);
@@ -369,7 +261,7 @@ public class AnswerFragment extends Fragment
         }
     }
 
-    private CompoundButton[] getCompoundButtons(int type) {
+    protected CompoundButton[] getCompoundButtons(int type) {
         CompoundButton[] views = new CompoundButton[4];
         switch (type) {
             case TYPE_CHOOSER:
@@ -404,19 +296,50 @@ public class AnswerFragment extends Fragment
         outState.putString(USER_NAME_KEY, mUserName);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mDetailFragmentListener = (DetailFragmentListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement DetailFragmentListener");
-        }
+    protected abstract void onNextButtonClick();
+
+    protected abstract void  onPlayAgainButtonClick();
+
+    protected void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mUserNameEdit.getWindowToken(), 0);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetailFragmentListener = null;
+    protected int getCurrentPage() {
+        return mCurrentPage;
+    }
+
+    protected void setCurrentPage(int page) {
+        mCurrentPage = page;
+    }
+
+    protected void setNextPage() {
+        mCurrentPage++;
+    }
+
+    protected int getScore() {
+        return mScore;
+    }
+
+    protected void setScore(int score) {
+        mScore = score;
+    }
+
+    protected void addOneScore() {
+        mScore++;
+    }
+
+    protected String getUserNameInput() {
+        return mUserNameEdit.getText().toString().trim();
+    }
+
+    protected void setUsername(String username) {
+        mUserName = username;
+    }
+
+    protected void setEndScoreText(int maxScore) {
+        mScoreTv.setText(getString(R.string.score_points_args, mUserName, mScore, maxScore));
+        String endScoreMessage = QuizUtils.getEndScoreMessage(getContext(), mScore, maxScore, mUserName);
+        mCongratzTv.setText(endScoreMessage);
     }
 }

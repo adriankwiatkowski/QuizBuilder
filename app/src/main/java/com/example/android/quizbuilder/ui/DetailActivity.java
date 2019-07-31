@@ -22,6 +22,9 @@ import com.example.android.quizbuilder.data.QuizRepository;
 import com.example.android.quizbuilder.data.database.QuizEntry;
 import com.example.android.quizbuilder.data.database.QuizPage;
 import com.example.android.quizbuilder.interfaces.DetailFragmentListener;
+import com.example.android.quizbuilder.ui.fragments.QuizAnswerFragment;
+import com.example.android.quizbuilder.ui.fragments.QuizBuilderFragment;
+import com.example.android.quizbuilder.utilities.QuizUtils;
 import com.example.android.quizbuilder.utilities.leaks.IMMLeaks;
 import com.example.android.quizbuilder.viewmodels.QuizDetailViewModel;
 import com.example.android.quizbuilder.viewmodels.QuizDetailViewModelFactory;
@@ -88,7 +91,7 @@ public class DetailActivity extends AppCompatActivity
                 @Override
                 public void onChanged(@Nullable QuizEntry quizEntry) {
                     mViewModel.getQuizEntry().removeObserver(this);
-                    if (canPlay(quizEntry)) {
+                    if (QuizUtils.canPlay(DetailActivity.this, quizEntry)) {
                         // Play game =]
                         play();
                     } else {
@@ -156,13 +159,13 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void playQuiz(QuizEntry quizEntry) {
-        if (canPlay(quizEntry)) {
+        if (QuizUtils.canPlay(DetailActivity.this, quizEntry)) {
             play();
         }
     }
 
     private void changeBuildForm(int quizType) {
-        BuilderFragment fragment = (BuilderFragment)
+        QuizBuilderFragment fragment = (QuizBuilderFragment)
                 getSupportFragmentManager().findFragmentByTag(BUILDER_TAG);
         if (fragment != null && fragment.isVisible()) {
             fragment.setQuizType(quizType);
@@ -171,64 +174,18 @@ public class DetailActivity extends AppCompatActivity
 
     private void play() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.quiz_detail_container, new AnswerFragment())
+                .replace(R.id.quiz_detail_container, new QuizAnswerFragment())
                 .commit();
     }
 
     private void build() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.quiz_detail_container, new BuilderFragment(), BUILDER_TAG)
+                .replace(R.id.quiz_detail_container, new QuizBuilderFragment(), BUILDER_TAG)
                 .commit();
     }
 
     private void changeQuizName() {
         changeBuildForm(TYPE_NAMING);
-    }
-
-    public boolean canPlay(@Nullable QuizEntry quizEntry) {
-        boolean canPlay = true;
-        if (quizEntry == null) {
-            canPlay = false;
-        } else if (quizEntry.getPages().size() <= 0) {
-            canPlay = false;
-            makeToast(getString(R.string.error_no_questions));
-        } else {
-            for (int i = 0; i < quizEntry.getPages().size(); i++) {
-                if (!canPlay) {
-                    break;
-                }
-                QuizPage quizPage = quizEntry.getPages().get(i);
-
-                int page = i + 1;
-
-                if (TextUtils.isEmpty(quizPage.getQuestion())) {
-                    canPlay = false;
-                    makeToast(getString(R.string.error_no_question, page));
-                    break;
-                }
-                if (quizPage.getType() != TYPE_TEXT_ANSWER) {
-                    List<String> answers = quizPage.getAnswers();
-                    for (int j = 0; j < answers.size(); j++) {
-                        if (TextUtils.isEmpty(answers.get(j))) {
-                            canPlay = false;
-                            makeToast(getString(R.string.error_no_answers, page));
-                            break;
-                        }
-                    }
-                }
-                List<String> correctAnswers = quizPage.getCorrectAnswers();
-                if (correctAnswers == null || correctAnswers.isEmpty()) {
-                    canPlay = false;
-                    makeToast(getString(R.string.error_no_correct_answer, page));
-                    break;
-                }
-            }
-        }
-        return canPlay;
-    }
-
-    private void makeToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void initViews() {
